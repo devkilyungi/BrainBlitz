@@ -5,6 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "BrainBlitz",
+    products: [
+        .executable(
+            name: "BrainBlitz",
+            targets: ["BrainBlitz"]
+        ),
+    ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.2.0"),
     ],
