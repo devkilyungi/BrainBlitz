@@ -18,6 +18,7 @@ struct Quiz {
     let questions: [Question]
 }
 
+@main
 struct BrainBlitz: ParsableCommand {
     static let configuration: CommandConfiguration = CommandConfiguration(
         commandName: "brainblitz",
@@ -90,11 +91,11 @@ struct Start: ParsableCommand {
         print("-------------------------------------------------")
         
         // Shuffle the questions
-        var questions = quiz.questions.shuffled()
+        let questions = quiz.questions.shuffled().prefix(5)
         
         // Start the quiz
         var score = 0
-        for (index, question) in questions.prefix(5).enumerated() {
+        for (index, question) in questions.enumerated() {
             printQuestion(question, index: index)
             score += askQuestionAndGetScore(question)
         }
@@ -115,6 +116,11 @@ struct Start: ParsableCommand {
     private func askQuestionAndGetScore(_ question: Question) -> Int {
         print("Enter your answer (A/B/C/D):")
         let userAnswer = readLine()?.uppercased() ?? ""
+        if userAnswer == question.correctAnswer {
+            print("Correct!")
+        } else {
+            print("Incorrect. The correct answer is \(question.correctAnswer).")
+        }
         return userAnswer == question.correctAnswer ? 1 : 0
     }
     
