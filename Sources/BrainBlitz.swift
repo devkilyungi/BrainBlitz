@@ -62,19 +62,7 @@ struct Start: ParsableCommand {
         // Start the quiz
         var score = 0
         for (index, question) in questions.enumerated() {
-            var timeLeft = 60 // Reset timer for each question
-            
-            // Create a timer for each question
-            let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                timeLeft -= 1
-                print("Time left for question \(index + 1): \(timeLeft) seconds")
-                
-                if timeLeft == 0 {
-                    print("Time's up for question \(index + 1)! Moving to the next question.")
-                    timer.invalidate()
-                    return
-                }
-            }
+            if index > 4 { return }
             
             print("\nQuestion \(index + 1): \(question.text)")
             for option in question.options {
@@ -89,9 +77,6 @@ struct Start: ParsableCommand {
             } else {
                 print("Incorrect. The correct answer is \(question.correctAnswer).")
             }
-            
-            // Invalidate the timer after each question
-            timer.invalidate()
         }
         
         print("\nQuiz completed! Your score: \(score)/\(questions.count)")
@@ -123,19 +108,7 @@ struct Start: ParsableCommand {
         // Start the quiz
         var score = 0
         for (index, question) in questions.enumerated() {
-            var timeLeft = 60 // Reset timer for each question
-            
-            // Create a timer for each question
-            let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                timeLeft -= 1
-                print("Time left for question \(index + 1): \(timeLeft) seconds")
-                
-                if timeLeft == 0 {
-                    print("Time's up for question \(index + 1)! Moving to the next question.")
-                    timer.invalidate()
-                    return
-                }
-            }
+            if index > 4 { return }
             
             print("\nQuestion \(index + 1): \(question.text)")
             for option in question.options {
@@ -150,9 +123,6 @@ struct Start: ParsableCommand {
             } else {
                 print("Incorrect. The correct answer is \(question.correctAnswer).")
             }
-            
-            // Invalidate the timer after each question
-            timer.invalidate()
         }
         
         print("\nQuiz completed! Your score: \(score)/\(questions.count)")
