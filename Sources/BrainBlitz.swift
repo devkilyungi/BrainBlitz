@@ -50,9 +50,8 @@ struct Start: ParsableCommand {
         print("---------------------------------------")
         print("|        Choose a quiz to start:       |")
         print("---------------------------------------")
-        print("|   1. Swift Quiz                      |")
-        print("|   2. Optionals and Error Handling    |")
-        print("|      Quiz                            |")
+        print("|   1. General Knowledge Quiz          |")
+        print("|   2. Swift Language Quiz             |")
         print("---------------------------------------")
         print("|       Enter your choice (1/2):       |")
         print("---------------------------------------")
@@ -62,9 +61,9 @@ struct Start: ParsableCommand {
         if let choice = readLine(), let option = Int(choice) {
             switch option {
             case 1:
-                startQuiz(quiz: Quiz(name: "Swift", questions: Questions.swiftQuestions))
+                startQuiz(quiz: Quiz(name: "General", questions: Questions.generalKnowledgeQuestions))
             case 2:
-                startQuiz(quiz: Quiz(name: "Optionals and Error Handling", questions: Questions.optionalsQuestions))
+                startQuiz(quiz: Quiz(name: "Swift", questions: Questions.swiftQuestions))
             default:
                 printInvalidChoiceMessage()
             }
