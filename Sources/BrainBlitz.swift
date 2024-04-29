@@ -115,12 +115,20 @@ struct Start: ParsableCommand {
     private func askQuestionAndGetScore(_ question: Question) -> Int {
         print("Enter your answer (A/B/C/D):")
         let userAnswer = readLine()?.uppercased() ?? ""
-        if userAnswer == question.correctAnswer {
-            print("Correct!")
-        } else {
-            print("Incorrect. The correct answer is \(question.correctAnswer).")
+        var scoreToReturn = 0
+        
+        if let firstChar = question.correctAnswer.first {
+            let correctAnswerFirstLetter = String(firstChar).uppercased()
+            if userAnswer == correctAnswerFirstLetter {
+                print("Correct!")
+                scoreToReturn = 1
+            } else {
+                scoreToReturn = 0
+                print("Incorrect. The correct answer is \(question.correctAnswer).")
+            }
         }
-        return userAnswer == question.correctAnswer ? 1 : 0
+        
+        return scoreToReturn
     }
     
     private func printQuizResult(_ score: Int, totalQuestions: Int) {
@@ -130,7 +138,7 @@ struct Start: ParsableCommand {
     }
     
     private func askRestart() {
-        print("Would you like to restart the quiz? (yes/no)")
+        print("Would you like to restart the quiz? (yes/no) Enter any character to Quit.")
         if let restartAnswer = readLine()?.lowercased(), restartAnswer == "yes" {
             do { try run() }
             catch { print("Exiting BrainBlitz. Failed to restart quiz!") }
