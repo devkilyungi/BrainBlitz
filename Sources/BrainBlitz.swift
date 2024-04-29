@@ -30,11 +30,17 @@ struct Start: ParsableCommand {
     )
     
     func run() throws {
-        print("Welcome to BrainBlitz!")
-        print("Choose a quiz to start:")
-        print("1. Swift Quiz")
-        print("2. Optionals and Error Handling Quiz")
-        print("Enter your choice (1/2):")
+        print("\n---------------------------------------")
+        print("|        Welcome to BrainBlitz!        |")
+        print("---------------------------------------")
+        print("|        Choose a quiz to start:       |")
+        print("---------------------------------------")
+        print("|   1. Swift Quiz                      |")
+        print("|   2. Optionals and Error Handling    |")
+        print("|      Quiz                            |")
+        print("---------------------------------------")
+        print("|       Enter your choice (1/2):       |")
+        print("---------------------------------------")
         
         if let choice = readLine(), let option = Int(choice) {
             switch option {
@@ -43,15 +49,21 @@ struct Start: ParsableCommand {
             case 2:
                 optionalQuiz()
             default:
-                print("Invalid choice. Please enter 1 or 2.")
+                print("---------------------------------------")
+                print("| Invalid choice. Please enter 1 or 2. ")
+                print("---------------------------------------")
             }
         } else {
-            print("Invalid input. Please enter a number.")
+            print("---------------------------------------")
+            print("|Invalid input. Please enter a number.|")
+            print("---------------------------------------")
         }
     }
     
     func swiftQuiz() {
-        print("Let's test your Swift knowledge.")
+        print("---------------------------------------")
+        print("|   Let's test your Swift knowledge.   |")
+        print("---------------------------------------")
         
         // Quiz questions
         var questions = Questions.swiftQuestions
@@ -64,13 +76,23 @@ struct Start: ParsableCommand {
         for (index, question) in questions.enumerated() {
             if index > 4 { return }
             
-            print("\nQuestion \(index + 1): \(question.text)")
+            // Calculate the length of the question text
+            let questionLength = question.text.count
+            let dashes = String(repeating: "-", count: questionLength + 12)
+            
+            print("\n\(dashes)")
+            print("Question \(index + 1): \(question.text)")
+            print("\(dashes)")
+            
             for option in question.options {
                 print(option)
             }
+            
+            print("\(dashes)")
             print("Enter your answer (A/B/C/D):")
             
             let userAnswer = readLine()?.uppercased() ?? ""
+            
             if userAnswer == question.correctAnswer {
                 print("Correct!")
                 score += 1
@@ -79,7 +101,9 @@ struct Start: ParsableCommand {
             }
         }
         
-        print("\nQuiz completed! Your score: \(score)/\(questions.count)")
+        print("\n-----------------------------------------------------------")
+        print("Quiz completed! Your score: \(score)/\(questions.count)")
+        print("-----------------------------------------------------------")
         
         // Ask the user if they want to restart the quiz or exit
         print("Would you like to restart the quiz? (yes/no)")
@@ -97,7 +121,9 @@ struct Start: ParsableCommand {
     }
     
     func optionalQuiz() {
+        print("-----------------------------------------------------------")
         print("Let's test your Optionals and Error Handling knowledge.")
+        print("-----------------------------------------------------------")
         
         // Quiz questions
         var questions = Questions.optionalsQuestions
@@ -110,10 +136,19 @@ struct Start: ParsableCommand {
         for (index, question) in questions.enumerated() {
             if index > 4 { return }
             
-            print("\nQuestion \(index + 1): \(question.text)")
+            // Calculate the length of the question text
+            let questionLength = question.text.count
+            let dashes = String(repeating: "-", count: questionLength + 12)
+            
+            print("\n\(dashes)")
+            print("Question \(index + 1): \(question.text)")
+            print("\(dashes)")
+            
             for option in question.options {
                 print(option)
             }
+            
+            print("\(dashes)")
             print("Enter your answer (A/B/C/D):")
             
             let userAnswer = readLine()?.uppercased() ?? ""
@@ -125,7 +160,9 @@ struct Start: ParsableCommand {
             }
         }
         
-        print("\nQuiz completed! Your score: \(score)/\(questions.count)")
+        print("\n-----------------------------------------------------------")
+        print("Quiz completed! Your score: \(score)/\(questions.count)")
+        print("-----------------------------------------------------------")
         
         // Ask the user if they want to restart the quiz or exit
         print("Would you like to restart the quiz? (yes/no)")
