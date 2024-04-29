@@ -13,7 +13,11 @@ struct Question {
     let correctAnswer: String
 }
 
-@main
+struct Quiz {
+    let name: String
+    let questions: [Question]
+}
+
 struct BrainBlitz: ParsableCommand {
     static let configuration: CommandConfiguration = CommandConfiguration(
         commandName: "brainblitz",
@@ -30,8 +34,18 @@ struct Start: ParsableCommand {
     )
     
     func run() throws {
-        print("\n---------------------------------------")
+        printWelcomeMessage()
+        printQuizOptions()
+        handleUserChoice()
+    }
+    
+    private func printWelcomeMessage() {
+        print("---------------------------------------")
         print("|        Welcome to BrainBlitz!        |")
+        print("---------------------------------------")
+    }
+    
+    private func printQuizOptions() {
         print("---------------------------------------")
         print("|        Choose a quiz to start:       |")
         print("---------------------------------------")
@@ -41,140 +55,81 @@ struct Start: ParsableCommand {
         print("---------------------------------------")
         print("|       Enter your choice (1/2):       |")
         print("---------------------------------------")
-        
+    }
+    
+    private func handleUserChoice() {
         if let choice = readLine(), let option = Int(choice) {
             switch option {
             case 1:
-                swiftQuiz()
+                startQuiz(quiz: Quiz(name: "Swift", questions: Questions.swiftQuestions))
             case 2:
-                optionalQuiz()
+                startQuiz(quiz: Quiz(name: "Optionals and Error Handling", questions: Questions.optionalsQuestions))
             default:
-                print("---------------------------------------")
-                print("| Invalid choice. Please enter 1 or 2. ")
-                print("---------------------------------------")
+                printInvalidChoiceMessage()
             }
         } else {
-            print("---------------------------------------")
-            print("|Invalid input. Please enter a number.|")
-            print("---------------------------------------")
+            printInvalidInputMessage()
         }
     }
     
-    func swiftQuiz() {
-        print("---------------------------------------")
-        print("|   Let's test your Swift knowledge.   |")
-        print("---------------------------------------")
-        
-        // Quiz questions
-        var questions = Questions.swiftQuestions
-        
-        // Shuffle the questions
-        questions.shuffle()
-        
-        // Start the quiz
-        var score = 0
-        for (index, question) in questions.enumerated() {
-            if index > 4 { return }
-            
-            // Calculate the length of the question text
-            let questionLength = question.text.count
-            let dashes = String(repeating: "-", count: questionLength + 12)
-            
-            print("\n\(dashes)")
-            print("Question \(index + 1): \(question.text)")
-            print("\(dashes)")
-            
-            for option in question.options {
-                print(option)
-            }
-            
-            print("\(dashes)")
-            print("Enter your answer (A/B/C/D):")
-            
-            let userAnswer = readLine()?.uppercased() ?? ""
-            
-            if userAnswer == question.correctAnswer {
-                print("Correct!")
-                score += 1
-            } else {
-                print("Incorrect. The correct answer is \(question.correctAnswer).")
-            }
-        }
-        
-        print("\n-----------------------------------------------------------")
-        print("Quiz completed! Your score: \(score)/\(questions.count)")
-        print("-----------------------------------------------------------")
-        
-        // Ask the user if they want to restart the quiz or exit
-        print("Would you like to restart the quiz? (yes/no)")
-        if let restartAnswer = readLine()?.lowercased(), restartAnswer == "yes" {
-            // Restart the quiz
-            do {
-                try run()
-            } catch {
-                print("Exiting BrainBlitz. Failed to restart quiz!")
-            }
-        } else {
-            // Exit gracefully
-            print("Exiting BrainBlitz. Thank you for playing!")
-        }
+    private func printInvalidChoiceMessage() {
+        print("----------------------------------------")
+        print("| Invalid choice. Please enter 1 or 2. |")
+        print("----------------------------------------")
     }
     
-    func optionalQuiz() {
-        print("-----------------------------------------------------------")
-        print("Let's test your Optionals and Error Handling knowledge.")
-        print("-----------------------------------------------------------")
-        
-        // Quiz questions
-        var questions = Questions.optionalsQuestions
+    private func printInvalidInputMessage() {
+        print("----------------------------------------")
+        print("| Invalid input. Please enter a number. |")
+        print("----------------------------------------")
+    }
+    
+    private func startQuiz(quiz: Quiz) {
+        print("-------------------------------------------------")
+        print("|    Let's test your \(quiz.name) knowledge.    |")
+        print("-------------------------------------------------")
         
         // Shuffle the questions
-        questions.shuffle()
+        var questions = quiz.questions.shuffled()
         
         // Start the quiz
         var score = 0
-        for (index, question) in questions.enumerated() {
-            if index > 4 { return }
-            
-            // Calculate the length of the question text
-            let questionLength = question.text.count
-            let dashes = String(repeating: "-", count: questionLength + 12)
-            
-            print("\n\(dashes)")
-            print("Question \(index + 1): \(question.text)")
-            print("\(dashes)")
-            
-            for option in question.options {
-                print(option)
-            }
-            
-            print("\(dashes)")
-            print("Enter your answer (A/B/C/D):")
-            
-            let userAnswer = readLine()?.uppercased() ?? ""
-            if userAnswer == question.correctAnswer {
-                print("Correct!")
-                score += 1
-            } else {
-                print("Incorrect. The correct answer is \(question.correctAnswer).")
-            }
+        for (index, question) in questions.prefix(5).enumerated() {
+            printQuestion(question, index: index)
+            score += askQuestionAndGetScore(question)
         }
         
+        printQuizResult(score, totalQuestions: questions.count)
+        askRestart()
+    }
+    
+    private func printQuestion(_ question: Question, index: Int) {
+        let dashes = String(repeating: "-", count: question.text.count + 12)
+        print("\n\(dashes)")
+        print("Question \(index + 1): \(question.text)")
+        print("\(dashes)")
+        question.options.forEach { print($0) }
+        print("\(dashes)")
+    }
+    
+    private func askQuestionAndGetScore(_ question: Question) -> Int {
+        print("Enter your answer (A/B/C/D):")
+        let userAnswer = readLine()?.uppercased() ?? ""
+        return userAnswer == question.correctAnswer ? 1 : 0
+    }
+    
+    private func printQuizResult(_ score: Int, totalQuestions: Int) {
         print("\n-----------------------------------------------------------")
-        print("Quiz completed! Your score: \(score)/\(questions.count)")
-        print("-----------------------------------------------------------")
-        
-        // Ask the user if they want to restart the quiz or exit
+        print("|  Quiz completed! Your score: \(score)/\(totalQuestions)  |")
+        print("------------------------------------------------------------")
+    }
+    
+    private func askRestart() {
         print("Would you like to restart the quiz? (yes/no)")
         if let restartAnswer = readLine()?.lowercased(), restartAnswer == "yes" {
-            // Restart the quiz
-            do {
-                try run()
-            } catch {
-                print("Exiting BrainBlitz. Failed to restart quiz!")
-            }
+            do { try run() }
+            catch { print("Exiting BrainBlitz. Failed to restart quiz!") }
         } else {
-            // Exit gracefully
             print("Exiting BrainBlitz. Thank you for playing!")
         }
     }
